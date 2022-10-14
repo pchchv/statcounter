@@ -1,5 +1,5 @@
-import os
 from datetime import date
+import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -25,6 +25,16 @@ async def root():
 
 @app.post('/')
 async def read_item(date: date, views: int, clicks: int, cost: float):
+    id = doc_loader(date, views, clicks, cost)
+    return {"inserted_id": str(id), "status": "ok"}
+
+@app.post('/json')
+async def read_item(item: Item):
+    id = doc_loader(item.date, item.views, item.clicks, item.cost)
+    return {"inserted_id": str(id), "status": "ok"}
+
+
+def doc_loader(date: date, views: int, clicks: int, cost: float):
     doc = {
         "date": date.isoformat(),
         "views": views,
@@ -33,5 +43,4 @@ async def read_item(date: date, views: int, clicks: int, cost: float):
         "cpc": float('{:.2f}'.format(cost/clicks)),
         "cpm": float('{:.2f}'.format(cost/views*1000))
     }
-    stat.insert_one(doc).inserted_id
-    return {"status": "ok"}
+    return stat.insert_one(doc).inserted_id
