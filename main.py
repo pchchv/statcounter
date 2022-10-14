@@ -35,6 +35,15 @@ async def read_item(item: Item):
     id = doc_loader(item.date, item.views, item.clicks, item.cost)
     return {"inserted_id": str(id), "status": "ok"}
 
+@app.get('/stat')
+async def read_item(fromDate: date):#, toDate: date):
+    res = []
+    for stat in stats.find({"date": fromDate.isoformat()}):
+        res.append(stat)
+    print(res)
+    # TODO: Need fix. The type of result is not suitable for the response.
+    return {"status": "ok"}
+
 
 def doc_loader(date: date, views: int, clicks: int, cost: float):
     doc = {
