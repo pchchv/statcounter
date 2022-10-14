@@ -1,5 +1,6 @@
 from datetime import date
 import os
+import pprint
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -9,8 +10,9 @@ from pymongo import MongoClient
 app = FastAPI()
 load_dotenv('.env')
 client = MongoClient(os.getenv('MONGO'))
-db = client['ststdb']
-stat = db.stat
+db = client['statsdb']
+stats = db.stats
+
 
 class Item(BaseModel):
     date: date
@@ -43,4 +45,4 @@ def doc_loader(date: date, views: int, clicks: int, cost: float):
         "cpc": float('{:.2f}'.format(cost/clicks)),
         "cpm": float('{:.2f}'.format(cost/views*1000))
     }
-    return stat.insert_one(doc).inserted_id
+    return stats.insert_one(doc).inserted_id
