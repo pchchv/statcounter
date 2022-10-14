@@ -1,6 +1,14 @@
+import os
 from fastapi import FastAPI
+from dotenv import load_dotenv
+from pymongo import MongoClient
+
 
 app = FastAPI()
+load_dotenv('.env')
+client = MongoClient(os.getenv('MONGO'))
+db = client['links-database']
+links = db.links
 
 
 @app.get('/')
