@@ -41,8 +41,13 @@ async def read_item(fromDate: date):#, toDate: date):
     for stat in stats.find({"date": fromDate.isoformat()}):
         res.append(stat)
     print(res)
-    # TODO: Need fix. The type of result is not suitable for the response.
+    # TODO: Need fix. The type of result is not suitable for the response
     return {"status": "ok"}
+
+@app.delete('/')
+async def root():
+    result = stats.delete_many({})
+    return {"deleted": result.deleted_count, "status": "ok"}
 
 
 def doc_loader(date: date, views: int, clicks: int, cost: float):
